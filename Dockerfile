@@ -15,3 +15,4 @@ EXPOSE 8080
 
 # Run the app
 CMD ["java", "-jar", "target/JavaWeb3-0.0.1-SNAPSHOT.jar"]
+
