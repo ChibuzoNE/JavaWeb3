@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-    maven 'Maven3'
-}
+        maven 'Maven3'
+    }
 
     environment {
         IMAGE_NAME = "chibuzone/javaweb3"
@@ -25,17 +25,15 @@ pipeline {
 
         stage('Setup Docker') {
             steps {
-                script {
-                    // For Windows
-                    bat 'net start docker || true'
-                    // For Linux: sh 'sudo systemctl start docker'
-                }
+                // Optional: Only needed if Docker might not be running
+                bat 'net start com.docker.service || exit 0'
             }
+        }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("chibuzone/javaweb3:latest")
+                    docker.build("${IMAGE_NAME}:latest")
                 }
             }
         }
@@ -47,7 +45,7 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
                     bat "docker push ${IMAGE_NAME}:latest"
                 }
             }
