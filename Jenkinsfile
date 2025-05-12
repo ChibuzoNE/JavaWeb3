@@ -23,11 +23,19 @@ pipeline {
             }
         }
 
+        stage('Setup Docker') {
+            steps {
+                script {
+                    // For Windows
+                    bat 'net start docker || true'
+                    // For Linux: sh 'sudo systemctl start docker'
+                }
+            }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:latest")
-                    bat 'docker build -t ${IMAGE_NAME} .'
+                    docker.build("chibuzone/javaweb3:latest")
                 }
             }
         }
