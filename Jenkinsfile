@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+    maven 'Maven3'
+}
+
     environment {
         IMAGE_NAME = "chibuzone/javaweb3"
         DOCKER_CREDENTIALS_ID = "dockerhub-creds"
