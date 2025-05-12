@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh './mvnw clean package -DskipTests'
+                bat 'mvn clean package'
             }
         }
 
@@ -23,6 +23,7 @@ pipeline {
             steps {
                 script {
                     docker.build("${IMAGE_NAME}:latest")
+                    bat 'docker build -t ${IMAGE_NAME} .'
                 }
             }
         }
@@ -34,8 +35,8 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh "docker push ${IMAGE_NAME}:latest"
+                    bat 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    bat "docker push ${IMAGE_NAME}:latest"
                 }
             }
         }
