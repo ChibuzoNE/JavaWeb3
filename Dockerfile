@@ -1,18 +1,18 @@
-# Use OpenJDK base image
-FROM openjdk:17-jdk-slim
+# Use an official Maven image to build the app
+FROM maven:3.8.6-eclipse-temurin AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy all project files
+# Copy project files and build
 COPY . .
+RUN mvn clean package -DskipTests
 
-# Build the project
-RUN ./mvnw clean package -DskipTests
+# Use Tomcat as base image to run the app
+FROM tomcat:9.0
 
-# Expose port 8080
+# Remove default web apps and deploy our WAR
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+
 EXPOSE 8080
-
-# Run the app
-CMD ["java", "-jar", "target/JavaWeb3-0.0.1-SNAPSHOT.jar"]
-
+CMD ["catalina.sh", "run"]
