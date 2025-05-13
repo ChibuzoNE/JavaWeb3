@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy project files and build
 COPY . .
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 # Use Tomcat as base image to run the app
 FROM tomcat:9.0
